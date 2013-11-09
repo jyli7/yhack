@@ -39,7 +39,7 @@ var app = {
 
     translateStuff: function (myPhrase) {
       $.ajax({
-        url: "https://www.googleapis.com/language/translate/v2?key=AIzaSyDfmyoOXccawF9ntFmRgP6khdFNzYj6HII&source=en&target=de&q=" + myPhrase,
+        url: "https://www.googleapis.com/language/translate/v2?key=AIzaSyDfmyoOXccawF9ntFmRgP6khdFNzYj6HII&source=zh-CN&target=en&q=" + encodeURIComponent(myPhrase),
         success: function (response) {
           alert(response.data.translations[0].translatedText);
         }
