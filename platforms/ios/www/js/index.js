@@ -18,7 +18,7 @@
  */
 var app = {
     // Application Constructor
-    initialize: function() {
+    initialize: function() {        
         this.bindEvents();
     },
     // Bind Event Listeners
@@ -34,6 +34,14 @@ var app = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        setupTranslationButton():
+    },
+
+    setupTranslationButton: function () {
+        alert("second");
+        $('.submit').on('click', function (e) {
+            alert($('.my-phrase').val(););
+        });
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

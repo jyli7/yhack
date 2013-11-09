@@ -26,6 +26,7 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
+        this.setupTranslationButton();
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
     // deviceready Event Handler
@@ -34,6 +35,23 @@ var app = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+    },
+
+    translateStuff: function (myPhrase) {
+      $.ajax({
+        url: "https://www.googleapis.com/language/translate/v2?key=AIzaSyDfmyoOXccawF9ntFmRgP6khdFNzYj6HII&source=en&target=de&q=" + myPhrase,
+        success: function (response) {
+          alert(response.data.translations[0].translatedText);
+        }
+      });
+    },
+
+    setupTranslationButton: function () {
+      var that = this;
+      $('.submit').on('click', function (e) {
+          var myPhrase = $('.my-phrase').val();
+          that.translateStuff(myPhrase);
+      });
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
