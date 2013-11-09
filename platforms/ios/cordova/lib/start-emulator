@@ -27,7 +27,11 @@
 set -e
 
 
+<<<<<<< HEAD
 DEFAULT_TARGET="iPhone (Retina 3.5-inch)"
+=======
+DEFAULT_TARGET="iPhone Retina (3.5-inch)"
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 TARGET=${1:-$DEFAULT_TARGET}
 LIB_PATH=$( cd "$( dirname "$0" )" && pwd -P)
 

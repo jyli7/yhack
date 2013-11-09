@@ -1,6 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
+<<<<<<< HEAD
 <widget id="com.phonegap.y-hack-app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Y-Hack-App</name>
+=======
+<widget id="com.phonegap.helloworld" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>HelloWorld</name>
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
     <description>
         Hello World sample application that responds to the deviceready event.
     </description>
@@ -48,5 +53,9 @@
     <gap:splash gap:platform="ios" height="768" src="res/screen/ios/screen-ipad-landscape.png" width="1024" />
     <gap:splash gap:platform="winphone" src="res/screen/windows-phone/screen-portrait.jpg" />
     <access origin="http://127.0.0.1*" />
+<<<<<<< HEAD
     <plugin name="com.jcesarmobile.OCRPlugin" value="OCRPlugin" />
+=======
+    <content src="index.html" />
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 </widget>

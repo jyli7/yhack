@@ -35,7 +35,11 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResignActive)
                                                  name:UIApplicationWillResignActiveNotification object:nil];
+<<<<<<< HEAD
     BOOL cloudBackup = [@"cloud" isEqualToString : self.commandDelegate.settings[@"BackupWebStorage"]];
+=======
+    BOOL cloudBackup = [@"cloud" isEqualToString : self.commandDelegate.settings[[@"BackupWebStorage" lowercaseString]]];
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 
     self.backupInfo = [[self class] createBackupInfoWithCloudBackup:cloudBackup];
 }

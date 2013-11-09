@@ -18,6 +18,7 @@
 # under the License.
 #
 # Valid values for "--target" (case insensitive):
+<<<<<<< HEAD
 #     "iPhone (Retina 3.5-inch)" (default)
 #     "iPhone (Retina 4-inch)"
 #     "iPhone"
@@ -31,4 +32,25 @@ echo \""iPhone (Retina 4-inch)"\"
 echo \""iPhone"\"
 echo \""iPad"\"
 echo \""iPad (Retina)"\"
+=======
+#     "iPhone Retina (3.5-inch)" (default)
+#     "iPhone Retina (4-inch)"
+#     "iPhone"
+#     "iPad"
+#     "iPad Retina"
+
+set -e
+
+echo \""iPhone Retina (3.5-inch)"\"
+echo \""iPhone Retina (4-inch)"\"
+
+# this assumes Xcode 5 minimum
+echo \""iPhone Retina (4-inch 64-bit)"\"
+
+echo \""iPhone"\"
+echo \""iPad"\"
+echo \""iPad Retina"\"
+
+
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 

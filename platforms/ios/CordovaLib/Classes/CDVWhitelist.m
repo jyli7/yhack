@@ -22,29 +22,120 @@
 NSString* const kCDVDefaultWhitelistRejectionString = @"ERROR whitelist rejection: url='%@'";
 NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
 
+<<<<<<< HEAD
 @interface CDVWhitelist ()
 
 @property (nonatomic, readwrite, strong) NSArray* whitelist;
 @property (nonatomic, readwrite, strong) NSDictionary* expandedWhitelists;
 
 - (void)processWhitelist;
+=======
+@interface CDVWhitelistPattern : NSObject {
+    @private
+    NSRegularExpression* _scheme;
+    NSRegularExpression* _host;
+    NSNumber* _port;
+    NSRegularExpression* _path;
+}
+
++ (NSString*)regexFromPattern:(NSString*)pattern allowWildcards:(bool)allowWildcards;
+- (id)initWithScheme:(NSString*)scheme host:(NSString*)host port:(NSString*)port path:(NSString*)path;
+- (bool)matches:(NSURL*)url;
+
+@end
+
+@implementation CDVWhitelistPattern
+
++ (NSString*)regexFromPattern:(NSString*)pattern allowWildcards:(bool)allowWildcards
+{
+    NSString* regex = [NSRegularExpression escapedPatternForString:pattern];
+
+    if (allowWildcards) {
+        regex = [regex stringByReplacingOccurrencesOfString:@"\\*" withString:@".*"];
+    }
+    return [NSString stringWithFormat:@"%@$", regex];
+}
+
+- (id)initWithScheme:(NSString*)scheme host:(NSString*)host port:(NSString*)port path:(NSString*)path
+{
+    self = [super init];  // Potentially change "self"
+    if (self) {
+        if ((scheme == nil) || [scheme isEqualToString:@"*"]) {
+            _scheme = nil;
+        } else {
+            _scheme = [NSRegularExpression regularExpressionWithPattern:[CDVWhitelistPattern regexFromPattern:scheme allowWildcards:NO] options:0 error:nil];
+        }
+        if ([host isEqualToString:@"*"]) {
+            _host = nil;
+        } else if ([host hasPrefix:@"*."]) {
+            _host = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"([a-z0-9.-]*\\.)?%@", [CDVWhitelistPattern regexFromPattern:[host substringFromIndex:2] allowWildcards:false]] options:0 error:nil];
+        } else {
+            _host = [NSRegularExpression regularExpressionWithPattern:[CDVWhitelistPattern regexFromPattern:host allowWildcards:NO] options:0 error:nil];
+        }
+        if ((port == nil) || [port isEqualToString:@"*"]) {
+            _port = nil;
+        } else {
+            _port = [[NSNumber alloc] initWithInteger:[port integerValue]];
+        }
+        if ((path == nil) || [path isEqualToString:@"/*"]) {
+            _path = nil;
+        } else {
+            _path = [NSRegularExpression regularExpressionWithPattern:[CDVWhitelistPattern regexFromPattern:path allowWildcards:YES] options:0 error:nil];
+        }
+    }
+    return self;
+}
+
+- (bool)matches:(NSURL*)url
+{
+    return (_scheme == nil || [_scheme numberOfMatchesInString:[url scheme] options:NSMatchingAnchored range:NSMakeRange(0, [[url scheme] length])]) &&
+           (_host == nil || [_host numberOfMatchesInString:[url host] options:NSMatchingAnchored range:NSMakeRange(0, [[url host] length])]) &&
+           (_port == nil || [[url port] isEqualToNumber:_port]) &&
+           (_path == nil || [_path numberOfMatchesInString:[url path] options:NSMatchingAnchored range:NSMakeRange(0, [[url path] length])])
+    ;
+}
+
+@end
+
+@interface CDVWhitelist ()
+
+@property (nonatomic, readwrite, strong) NSMutableArray* whitelist;
+@property (nonatomic, readwrite, strong) NSMutableSet* permittedSchemes;
+
+- (void)addWhiteListEntry:(NSString*)pattern;
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 
 @end
 
 @implementation CDVWhitelist
 
+<<<<<<< HEAD
 @synthesize whitelist, expandedWhitelists, whitelistRejectionFormatString;
+=======
+@synthesize whitelist, permittedSchemes, whitelistRejectionFormatString;
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 
 - (id)initWithArray:(NSArray*)array
 {
     self = [super init];
     if (self) {
+<<<<<<< HEAD
         self.whitelist = array;
         self.expandedWhitelists = nil;
         self.whitelistRejectionFormatString = kCDVDefaultWhitelistRejectionString;
         [self processWhitelist];
     }
 
+=======
+        self.whitelist = [[NSMutableArray alloc] init];
+        self.permittedSchemes = [[NSMutableSet alloc] init];
+        self.whitelistRejectionFormatString = kCDVDefaultWhitelistRejectionString;
+
+        for (NSString* pattern in array) {
+            [self addWhiteListEntry:pattern];
+        }
+    }
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
     return self;
 }
 
@@ -82,6 +173,7 @@ NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
     return YES;
 }
 
+<<<<<<< HEAD
 - (NSString*)extractHostFromUrlString:(NSString*)url
 {
     NSURL* aUrl = [NSURL URLWithString:url];
@@ -154,6 +246,69 @@ NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
     }
 
     self.expandedWhitelists = _expandedWhitelists;
+=======
+- (void)addWhiteListEntry:(NSString*)origin
+{
+    if (self.whitelist == nil) {
+        return;
+    }
+
+    if ([origin isEqualToString:@"*"]) {
+        NSLog(@"Unlimited access to network resources");
+        self.whitelist = nil;
+        self.permittedSchemes = nil;
+    } else { // specific access
+        NSRegularExpression* parts = [NSRegularExpression regularExpressionWithPattern:@"^((\\*|[a-z-]+)://)?(((\\*\\.)?[^*/:]+)|\\*)?(:(\\d+))?(/.*)?" options:0 error:nil];
+        NSTextCheckingResult* m = [parts firstMatchInString:origin options:NSMatchingAnchored range:NSMakeRange(0, [origin length])];
+        if (m != nil) {
+            NSRange r;
+            NSString* scheme = nil;
+            r = [m rangeAtIndex:2];
+            if (r.location != NSNotFound) {
+                scheme = [origin substringWithRange:r];
+            }
+
+            NSString* host = nil;
+            r = [m rangeAtIndex:3];
+            if (r.location != NSNotFound) {
+                host = [origin substringWithRange:r];
+            }
+
+            // Special case for two urls which are allowed to have empty hosts
+            if (([scheme isEqualToString:@"file"] || [scheme isEqualToString:@"content"]) && (host == nil)) {
+                host = @"*";
+            }
+
+            NSString* port = nil;
+            r = [m rangeAtIndex:7];
+            if (r.location != NSNotFound) {
+                port = [origin substringWithRange:r];
+            }
+
+            NSString* path = nil;
+            r = [m rangeAtIndex:8];
+            if (r.location != NSNotFound) {
+                path = [origin substringWithRange:r];
+            }
+
+            if (scheme == nil) {
+                // XXX making it stupid friendly for people who forget to include protocol/SSL
+                [self.whitelist addObject:[[CDVWhitelistPattern alloc] initWithScheme:@"http" host:host port:port path:path]];
+                [self.whitelist addObject:[[CDVWhitelistPattern alloc] initWithScheme:@"https" host:host port:port path:path]];
+            } else {
+                [self.whitelist addObject:[[CDVWhitelistPattern alloc] initWithScheme:scheme host:host port:port path:path]];
+            }
+
+            if (self.permittedSchemes != nil) {
+                if ([scheme isEqualToString:@"*"]) {
+                    self.permittedSchemes = nil;
+                } else if (scheme != nil) {
+                    [self.permittedSchemes addObject:scheme];
+                }
+            }
+        }
+    }
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 }
 
 - (BOOL)schemeIsAllowed:(NSString*)scheme
@@ -165,7 +320,11 @@ NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
         return YES;
     }
 
+<<<<<<< HEAD
     return (self.expandedWhitelists != nil) && ([self.expandedWhitelists objectForKey:scheme] != nil);
+=======
+    return (self.permittedSchemes == nil) || [self.permittedSchemes containsObject:scheme];
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
 }
 
 - (BOOL)URLIsAllowed:(NSURL*)url
@@ -175,6 +334,7 @@ NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
 
 - (BOOL)URLIsAllowed:(NSURL*)url logFailure:(BOOL)logFailure
 {
+<<<<<<< HEAD
     NSString* scheme = [url scheme];
 
     // http[s] and ftp[s] should also validate against the common set in the kCDVDefaultSchemeName list
@@ -187,6 +347,15 @@ NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
     }
 
     // Check that the scheme is supported
+=======
+    // Shortcut acceptance: Are all urls whitelisted ("*" in whitelist)?
+    if (whitelist == nil) {
+        return YES;
+    }
+
+    // Shortcut rejection: Check that the scheme is supported
+    NSString* scheme = [url scheme];
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
     if (![self schemeIsAllowed:scheme]) {
         if (logFailure) {
             NSLog(@"%@", [self errorStringForURL:url]);
@@ -194,6 +363,7 @@ NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
         return NO;
     }
 
+<<<<<<< HEAD
     NSArray* expandedWhitelist = [self.expandedWhitelists objectForKey:scheme];
 
     // Are we allowing everything for this scheme?
@@ -219,6 +389,20 @@ NSString* const kCDVDefaultSchemeName = @"cdv-default-scheme";
 
         if ([regex_test evaluateWithObject:urlHost] == YES) {
             // if it matches at least one rule, return
+=======
+    // http[s] and ftp[s] should also validate against the common set in the kCDVDefaultSchemeName list
+    if ([scheme isEqualToString:@"http"] || [scheme isEqualToString:@"https"] || [scheme isEqualToString:@"ftp"] || [scheme isEqualToString:@"ftps"]) {
+        NSURL* newUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@%@", kCDVDefaultSchemeName, [url host], [url path]]];
+        // If it is allowed, we are done.  If not, continue to check for the actual scheme-specific list
+        if ([self URLIsAllowed:newUrl logFailure:NO]) {
+            return YES;
+        }
+    }
+
+    // Check the url against patterns in the whitelist
+    for (CDVWhitelistPattern* p in self.whitelist) {
+        if ([p matches:url]) {
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
             return YES;
         }
     }

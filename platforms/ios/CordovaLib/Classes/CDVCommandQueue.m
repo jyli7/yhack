@@ -102,6 +102,7 @@
 
             // Iterate over and execute all of the commands.
             for (NSArray* jsonEntry in commandBatch) {
+<<<<<<< HEAD
                 CDVInvokedUrlCommand* command = [CDVInvokedUrlCommand commandFromJson:jsonEntry];
                 CDV_EXEC_LOG(@"Exec(%@): Calling %@.%@", command.callbackId, command.className, command.methodName);
 
@@ -115,6 +116,23 @@
 
                         DLog(@"FAILED pluginJSON = %@", commandString);
 #endif
+=======
+                @autoreleasepool {
+                    CDVInvokedUrlCommand* command = [CDVInvokedUrlCommand commandFromJson:jsonEntry];
+                    CDV_EXEC_LOG(@"Exec(%@): Calling %@.%@", command.callbackId, command.className, command.methodName);
+
+                    if (![self execute:command]) {
+#ifdef DEBUG
+                            NSString* commandJson = [jsonEntry JSONString];
+                            static NSUInteger maxLogLength = 1024;
+                            NSString* commandString = ([commandJson length] > maxLogLength) ?
+                                [NSString stringWithFormat:@"%@[...]", [commandJson substringToIndex:maxLogLength]] :
+                                commandJson;
+
+                            DLog(@"FAILED pluginJSON = %@", commandString);
+#endif
+                    }
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
                 }
             }
         }

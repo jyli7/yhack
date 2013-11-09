@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"lib":{"www":{"id":"phonegap","version":"3.0.0","uri":"https://github.com/phonegap/phonegap-app-hello-world/archive/3.0.0.tar.gz"}},"id":"com.phonegap.y-hack-app","name":"Y-Hack-App"}
+=======
+{"lib":{"www":{"id":"phonegap","version":"3.1.0","uri":"https://github.com/phonegap/phonegap-app-hello-world/archive/3.1.0.tar.gz"}},"id":"com.phonegap.helloworld","name":"HelloWorld"}
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c

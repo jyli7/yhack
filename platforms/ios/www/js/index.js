@@ -18,7 +18,11 @@
  */
 var app = {
     // Application Constructor
+<<<<<<< HEAD
     initialize: function() {
+=======
+    initialize: function() {        
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
         this.bindEvents();
     },
     // Bind Event Listeners
@@ -34,7 +38,18 @@ var app = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+<<<<<<< HEAD
         
+=======
+        setupTranslationButton():
+    },
+
+    setupTranslationButton: function () {
+        alert("second");
+        $('.submit').on('click', function (e) {
+            alert($('.my-phrase').val(););
+        });
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

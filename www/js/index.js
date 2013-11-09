@@ -26,6 +26,10 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
+<<<<<<< HEAD
+=======
+        this.setupTranslationButton();
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
     // deviceready Event Handler
@@ -33,6 +37,7 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+<<<<<<< HEAD
         function onPhotoURISuccess(imageURI) {
             callNativePlugin({url_imagen: imageURI});
         }
@@ -51,6 +56,26 @@ var app = {
         }
         onPhotoURISuccess('img/sample.png');
         app.receivedEvent('deviceready');
+=======
+        app.receivedEvent('deviceready');
+    },
+
+    translateStuff: function (myPhrase) {
+      $.ajax({
+        url: "https://www.googleapis.com/language/translate/v2?key=AIzaSyDfmyoOXccawF9ntFmRgP6khdFNzYj6HII&source=zh-CN&target=en&q=" + encodeURIComponent(myPhrase),
+        success: function (response) {
+          alert(response.data.translations[0].translatedText);
+        }
+      });
+    },
+
+    setupTranslationButton: function () {
+      var that = this;
+      $('.submit').on('click', function (e) {
+          var myPhrase = $('.my-phrase').val();
+          that.translateStuff(myPhrase);
+      });
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

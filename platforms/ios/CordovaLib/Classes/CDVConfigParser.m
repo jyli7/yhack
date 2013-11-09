@@ -40,6 +40,12 @@
         self.pluginsDict = [[NSMutableDictionary alloc] initWithCapacity:30];
         self.settings = [[NSMutableDictionary alloc] initWithCapacity:30];
         self.whitelistHosts = [[NSMutableArray alloc] initWithCapacity:30];
+<<<<<<< HEAD
+=======
+        [self.whitelistHosts addObject:@"file:///*"];
+        [self.whitelistHosts addObject:@"content:///*"];
+        [self.whitelistHosts addObject:@"data:///*"];
+>>>>>>> 59781c5491dff2aea89000e7edf15f7365d0f88c
         self.startupPluginNames = [[NSMutableArray alloc] initWithCapacity:8];
         featureName = nil;
     }
